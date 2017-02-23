@@ -9,7 +9,6 @@ trait SparkConfig {
 
   lazy val driver = "org.postgresql.Driver"
   lazy val jdbcUrl = "jdbc:postgresql://127.0.0.1:5432/local"
-  lazy val dbTable = "spark"
   lazy val user = "postgres"
   lazy val password = "1234"
 

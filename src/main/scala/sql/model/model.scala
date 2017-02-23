@@ -1,3 +1,19 @@
 package sql.model
 
-case class SparkModel(id: Long, name: String)
+import org.joda.time.LocalDate
+
+case class FitnessFreak(id: Long,
+                        name: String,
+                        birthday: LocalDate,
+                        routines: List[Routine])
+
+case class Routine(id: Long,
+                   freakId: Long,
+                   name: String,
+                   date: LocalDate,
+                   exercises: List[Exercise])
+
+case class Exercise(id: Long,
+                    routineId: Long,
+                    description: String,
+                    series: List[Int])
