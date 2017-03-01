@@ -10,7 +10,7 @@ case class FitnessFreak(id: Long,
 case class Routine(id: Long,
                    freakId: Long,
                    name: String,
-                   date: LocalDate,
+                   startDate: LocalDate,
                    exercises: List[Exercise])
 
 case class Exercise(id: Long,

@@ -1,8 +1,8 @@
 package sql
 
 import org.apache.spark.SparkConf
-import org.apache.spark.sql.{DataFrame, SparkSession}
-import sql.model.FitnessFreak
+import org.apache.spark.sql.{Column, DataFrame, SparkSession}
+import sql.model.{ExerciseDAO, FitnessFreakDAO, RoutineDAO}
 
 object SparkFromPostgresSQL extends SparkConfig with LoadData {
 
@@ -27,21 +27,26 @@ object SparkFromPostgresSQL extends SparkConfig with LoadData {
     val spark = SparkSession.builder().config(sConf).getOrCreate()
 
     // Load app
-        run(500000)
-
-    val freaks = createBasicDF(spark, "fitness-freaks")
-    val exercises = createBasicDF(spark, "exercises")
-    val routines = createBasicDF(spark, "routines")
-
+//    run(500000)
 
     import sql.model.Convertions._
 
-    val filteredCol = time(freaks.as[FitnessFreak].filter(_.name == "coco 0"))
+    val freaks = createBasicDF(spark, "fitness_freaks").as[FitnessFreakDAO]
+    val routines = createBasicDF(spark, "routines").withColumnRenamed("freak_id", "freakId").withColumnRenamed("start_date", "startDate").as[RoutineDAO]
+    val exercises = createBasicDF(spark, "exercises").withColumnRenamed("routine_id", "routineId").as[ExerciseDAO]
 
-    filteredCol.foreach{ r =>
+
+//    val filteredCol = time(freaks.filter(_.name == "Loro 1"))
+//    val filteredCol2 = time(routines.filter(_.id == 1))
+//    val filteredCol3 = time(exercises.filter(_.routineId == 1))
+
+    val k = freaks.filter(_.name == "Loro 1").join(routines, freaks("id") === routines("freakId"))
+
+    k.collect().foreach{r =>
       println(r)
     }
 
+    spark.stop()
   }
 
   def time[A](a: => A): A = {
